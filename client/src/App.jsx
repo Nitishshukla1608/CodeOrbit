@@ -2,7 +2,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Toaster } from "sonner";
 
 import LoginPage from "@/components/pages/login";
-import Dashboard from "@/components/dashboard/overview-dashboard";
+import Dashboard from "@/components/dashboard/page.jsx";
 import Home from "@/components/pages/Home";
 import AuthCallbackPage from "@/components/auth/callback";
 

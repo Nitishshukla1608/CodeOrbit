@@ -336,13 +336,11 @@ export default function OverviewDashboard() {
                 <h2 className="font-heading text-lg font-semibold">
                   Recent repositories
                 </h2>
-
+                
                 <p className="text-sm text-muted-foreground">
                   Jump back into a repo you have indexed recently.
                 </p>
-
               </div>
-
 
               <Link
                 to="/dashboard"
@@ -350,14 +348,11 @@ export default function OverviewDashboard() {
               >
                 View all
               </Link>
-
             </div>
 
 
             {/* Loading */}
-
             {reposQuery.isLoading ? (
-
               <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-1 2xl:grid-cols-2">
 
                 {Array.from({ length: 2 }).map((_, index) => (
