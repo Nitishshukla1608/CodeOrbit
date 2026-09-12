@@ -181,23 +181,18 @@ import {
           {/* GitHub link */}
   
           {repo.htmlUrl ? (
-            <Button
-              variant="ghost"
-              size="sm"
-              render={
-                <a
-                  href={repo.htmlUrl}
-                  target="_blank"
-                  rel="noreferrer"
-                />
-              }
-            >
-              <ExternalLink data-icon="inline-start" />
-              GitHub
-            </Button>
-          ) : (
-            <span />
-          )}
+  <a
+    href={repo.htmlUrl}
+    target="_blank"
+    rel="noreferrer"
+    className="inline-flex h-9 items-center justify-center gap-2 rounded-md px-3 text-sm font-medium hover:bg-accent hover:text-accent-foreground"
+  >
+    <ExternalLink className="size-4" />
+    GitHub
+  </a>
+) : (
+  <span />
+)}
   
           <div className="flex gap-2">
             {/* Chat button */}

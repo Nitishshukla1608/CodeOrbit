@@ -7,6 +7,8 @@ import {
 
 import { useTheme } from "next-themes";
 
+import { Link } from "react-router-dom";
+
 import { GitHubIcon } from "@/components/icons/github-icon";
 import { ModeToggle } from "@/components/ui/mode-toggle";
 
@@ -35,7 +37,7 @@ import {
   useLogout,
 } from "@/hooks/use-auth";
 
-export function SettingsDashboard() {
+export  function SettingsDashboard() {
   const { data: user } = useCurrentUser();
 
   const logout = useLogout();
@@ -62,7 +64,7 @@ export function SettingsDashboard() {
           </CardTitle>
 
           <CardDescription>
-            Your GitHub account connected to DevPilot.
+            Your GitHub account connected to CodeOrbit.
           </CardDescription>
         </CardHeader>
 
@@ -258,34 +260,35 @@ export function SettingsDashboard() {
 
           {/* GitHub */}
 
-          <Button
-            variant="outline"
-            className="justify-start"
-            disabled
-          >
 
-            <UserRound data-icon="inline-start" />
 
-            Manage on GitHub
+          <div className="flex gap-2">
+          <Button variant="outline" size="sm" asChild>
+  <a
+    href={
+      user?.githubUsername
+        ? `https://github.com/${user.githubUsername}`
+        : "#"
+    }
+    target="_blank"
+    rel="noopener noreferrer"
+    className="flex items-center gap-2"
+  >
+    <UserRound className="size-4" />
+    Manage on GitHub
+  </a>
+</Button>
 
-          </Button>
-
-          {/* Logout */}
-
-          <Button
-            variant="destructive"
-            className="justify-start"
-            onClick={() => logout.mutate()}
-            disabled={logout.isPending}
-          >
-
-            <LogOut data-icon="inline-start" />
-
-            {logout.isPending
-              ? "Logging out..."
-              : "Log out"}
-
-          </Button>
+  <Button
+    variant="destructive"
+    className="justify-start"
+    onClick={() => logout.mutate()}
+    disabled={logout.isPending}
+  >
+    <LogOut />
+    {logout.isPending ? "Logging out..." : "Log out"}
+  </Button>
+</div>
 
         </CardContent>
 

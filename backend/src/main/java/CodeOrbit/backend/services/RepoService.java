@@ -74,6 +74,7 @@ public class RepoService {
 
     @Transactional(readOnly = true)
     public List<RepositoryResponse> listStored(UUID userId) {
+        System.out.println("listStored");
         return repositoryRepository.findByUserIdOrderByFullNameAsc(userId).stream()
                 .map(this::toResponse)
                 .toList();

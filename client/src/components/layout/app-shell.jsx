@@ -126,7 +126,6 @@ export default function AppShell({
                           className="h-9"
                         >
                           <Icon />
-
                           <span>
                             {item.title}
                           </span>

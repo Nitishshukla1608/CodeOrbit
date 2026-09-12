@@ -125,18 +125,17 @@ export default function OverviewDashboard() {
         !searchValue ||
         repo.name?.toLowerCase().includes(searchValue) ||
         repo.fullName?.toLowerCase().includes(searchValue);
-
+    console.log(matchesSearch)
 
       /* -----------------------------------------------
          VISIBILITY
       ------------------------------------------------ */
 
-      const repoVisibility =
-        repo.visibility?.toLowerCase();
-
       const matchesVisibility =
-        visibility === "all" ||
-        repoVisibility === visibility;
+      visibility === "all" ||
+      (visibility === "public" && repo.isPrivate === false) ||
+      (visibility === "private" && repo.isPrivate === true);
+      console.log(matchesVisibility)
 
 
       /* -----------------------------------------------
@@ -336,7 +335,7 @@ export default function OverviewDashboard() {
                 <h2 className="font-heading text-lg font-semibold">
                   Recent repositories
                 </h2>
-                
+
                 <p className="text-sm text-muted-foreground">
                   Jump back into a repo you have indexed recently.
                 </p>
