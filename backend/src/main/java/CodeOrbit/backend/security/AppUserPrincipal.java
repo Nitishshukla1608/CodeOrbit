@@ -9,7 +9,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 
-
+// AppUserPrincipal ek Spring Security OAuth2 user hai.
 public class AppUserPrincipal implements OAuth2User {
 
     private final User user;

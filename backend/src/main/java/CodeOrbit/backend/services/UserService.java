@@ -16,7 +16,7 @@ import lombok.RequiredArgsConstructor;
 public class UserService {
     public final UserRepository userRepository;
     public final TextEncryptor tokenEncryptor;
-
+ //  yahan user githubId se search hoga aur user entity banaaya jaaeyega aur DB me save ho'ga
     @Transactional
     public User upsertFromGitHub(Map<String, Object> attributes, String accessToken, String scopes) {
         Long githubId = toLong(attributes.get("id"));
@@ -39,6 +39,7 @@ public class UserService {
         user.setTokenScopes(scopes);
         return userRepository.save(user);
     }
+
     @Transactional(readOnly = true)
     public User requiredById(UUID id) {
         return userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("User not found"));

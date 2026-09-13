@@ -29,6 +29,7 @@ public class CorsConfig {
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
+         // backend ke saare URL paths , sab par ye config apply hoga.
         return source;
     }
 }

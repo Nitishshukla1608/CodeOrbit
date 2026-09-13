@@ -30,9 +30,7 @@ public class RepoController {
     ) {
         UUID userId = currentUser.require().getId();
         if (refresh) {
-
             return repoService.syncAndListRepos(userId);
-
         }
         return repoService.listStored(userId);
     }
@@ -41,7 +39,6 @@ public class RepoController {
     @GetMapping("/{id}")
     public RepositoryResponse get(@PathVariable UUID id) {
         UUID userId = currentUser.require().getId();
-        System.out.println("get");
         Repository repository = repoService.requireOwned(id, userId);
 
         return repoService.toResponse(repository);
@@ -51,7 +48,6 @@ public class RepoController {
     @GetMapping("/{id}/status")
     public IndexStatusResponse status(@PathVariable UUID id) {
         UUID userId = currentUser.require().getId();
-
         return repoService.status(id, userId);
     }
 
