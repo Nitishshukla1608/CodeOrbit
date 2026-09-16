@@ -33,7 +33,7 @@ function getErrorSummary(message) {
 
 export function IndexErrorAlert({ message }) {
   const [open, setOpen] = useState(false);
-
+console.log(message);
   const summary = getErrorSummary(message);
 
   const isExpandable =
@@ -53,7 +53,7 @@ export function IndexErrorAlert({ message }) {
       <AlertDescription className="text-xs text-destructive/90">
         {!isExpandable ? (
           <p className="wrap-break-word leading-relaxed">
-            {message}
+            {message}g
           </p>
         ) : (
           <Collapsible

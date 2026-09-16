@@ -9,7 +9,7 @@ import { SettingsDashboard } from "@/components/dashboard/settings-dashboard.jsx
 import Dashboar_Overview from "@/components/dashboard/overview-dashboard.jsx"
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import PublicOnlyRoute from "./components/PublicOnlyRoute.jsx";
-import {ChatViewWrapper} from "./components/chat/chat-view-wrapper.jsx"
+import { ChatViewWrapper } from "./components/chat/chat-view-wrapper.jsx"
 import { SidebarProvider } from "@/components/ui/sidebar";
 
 function App() {
@@ -52,7 +52,8 @@ function App() {
             }
           />
 
-<Route
+
+          <Route
             path="/dashboard/overview"
             element={
               <SidebarProvider>
@@ -62,10 +63,10 @@ function App() {
           />
 
 
-<Route
-  path="/chat/:repoId"
-  element={<ChatViewWrapper />}
-/>
+          <Route
+            path="/chat/:repoId"
+            element={<ChatViewWrapper />}
+          />
 
 
           <Route
