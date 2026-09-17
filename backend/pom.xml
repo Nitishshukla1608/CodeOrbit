@@ -142,7 +142,7 @@
 						</goals>
 						<configuration>
 							<annotationProcessorPaths>
-								<path>wha
+								<path>
 									<groupId>org.projectlombok</groupId>
 									<artifactId>lombok</artifactId>
 								</path>
