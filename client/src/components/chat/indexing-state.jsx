@@ -20,6 +20,7 @@ export function IndexingState({
 }) {
   const indexMutation = useStartIndexing();
 
+
   const filesProcessed =
     status?.filesProcessed ?? repo.filesProcessed;
 

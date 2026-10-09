@@ -1,16 +1,21 @@
 import { useEffect } from "react";
+
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
+
 import { AlertCircle } from "lucide-react";
 
 import { GitHubIcon } from "@/components/icons/github-icon";
 import { BrandMark } from "@/components/layout/app-shell";
 import { ModeToggle } from "@/components/ui/mode-toggle";
+
 import {
   Alert,
   AlertDescription,
   AlertTitle,
 } from "@/components/ui/alert";
+
 import { buttonVariants } from "@/components/ui/button";
+
 import {
   Card,
   CardContent,
@@ -18,13 +23,17 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+
 import { Spinner } from "@/components/ui/spinner";
 
 import { cn } from "@/lib/utils";
+
 import { getGithubLoginUrl } from "@/lib/api";
 import { useCurrentUser } from "@/hooks/use-auth";
 
-
+/**
+ * Loading screen
+ */
 function LoginLoading() {
   return (
     <div className="flex min-h-svh items-center justify-center">
@@ -33,7 +42,9 @@ function LoginLoading() {
   );
 }
 
-
+/**
+ * Login page content
+ */
 function LoginContent() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
@@ -46,12 +57,16 @@ function LoginContent() {
     isLoading,
   } = useCurrentUser();
 
-
+  /**
+   * Redirect authenticated users.
+   */
   useEffect(() => {
     if (!isLoading && user) {
-      const destination = next.startsWith("/")
-        ? next
-        : "/dashboard";
+      // Allow only internal application paths.
+      const destination =
+        next.startsWith("/") && !next.startsWith("//")
+          ? next
+          : "/dashboard";
 
       navigate(destination, {
         replace: true,
@@ -59,17 +74,18 @@ function LoginContent() {
     }
   }, [user, isLoading, next, navigate]);
 
-
+  /**
+   * Show loading screen while checking authentication.
+   */
   if (isLoading) {
     return <LoginLoading />;
   }
 
-
   return (
     <div className="relative flex min-h-svh flex-col overflow-hidden bg-background">
-
       {/* Background effect */}
       <div
+        aria-hidden="true"
         className="
           pointer-events-none
           absolute
@@ -80,19 +96,19 @@ function LoginContent() {
 
       {/* Header */}
       <header className="relative z-10 flex h-14 items-center justify-between px-4">
-
-        <Link to="/">
+        <Link
+          to="/"
+          aria-label="CodeOrbit homepage"
+          className="rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        >
           <BrandMark />
         </Link>
 
         <ModeToggle />
-
       </header>
-
 
       {/* Main */}
       <main className="relative z-10 flex flex-1 items-center justify-center px-4 py-10">
-
         <Card
           className="
             w-full
@@ -104,10 +120,8 @@ function LoginContent() {
             backdrop-blur-xl
           "
         >
-
           {/* Card Header */}
           <CardHeader className="space-y-4 text-center">
-
             <div
               className="
                 mx-auto
@@ -123,29 +137,22 @@ function LoginContent() {
               <GitHubIcon className="size-6" />
             </div>
 
-
             <div className="space-y-1">
-
               <CardTitle className="text-xl">
-                Sign in
+                Sign in to CodeOrbit
               </CardTitle>
 
               <CardDescription>
                 Connect GitHub to chat with your repositories.
               </CardDescription>
-
             </div>
-
           </CardHeader>
-
 
           {/* Card Content */}
           <CardContent className="space-y-4">
-
-            {/* Error */}
+            {/* Authentication error */}
             {error && (
               <Alert variant="destructive">
-
                 <AlertCircle />
 
                 <AlertTitle>
@@ -153,12 +160,12 @@ function LoginContent() {
                 </AlertTitle>
 
                 <AlertDescription>
-                  Please try again.
+                  {error === "access_denied"
+                    ? "GitHub authorization was cancelled. Please try again."
+                    : "We couldn't sign you in. Please try again."}
                 </AlertDescription>
-
               </Alert>
             )}
-
 
             {/* GitHub Login */}
             <a
@@ -179,24 +186,25 @@ function LoginContent() {
                 `
               )}
             >
-
               <GitHubIcon className="size-5" />
 
               Continue with GitHub
-
             </a>
 
+            {/* Supporting text */}
+            <p className="text-center text-xs leading-relaxed text-muted-foreground">
+              Sign in securely with your GitHub account to access your repositories.
+            </p>
           </CardContent>
-
         </Card>
-
       </main>
-
     </div>
   );
 }
 
-
+/**
+ * Login page
+ */
 export default function Login() {
   return <LoginContent />;
 }

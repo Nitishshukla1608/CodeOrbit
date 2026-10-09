@@ -1,16 +1,24 @@
 import { formatDistanceToNow } from "date-fns";
-import { Plus, RotateCcw } from "lucide-react";
+
+import {
+  Plus,
+  RotateCcw,
+} from "lucide-react";
 
 import { IndexStatusBadge } from "@/components/dashboard/repo-status";
+
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
+
 import {
   useChatSessions,
   useCreateChatSession,
 } from "@/hooks/use-chat";
+
 import { useStartIndexing } from "@/hooks/use-repos";
+
 import { cn } from "@/lib/utils";
 
 export function ChatSidebar({
@@ -18,24 +26,49 @@ export function ChatSidebar({
   sessionId,
   onSelectSession,
 }) {
-  const ready = repo.indexStatus === "READY";
+  const ready =
+    repo.indexStatus === "READY";
 
-  const sessionsQuery = useChatSessions(repo.id, ready);
-  const createSession = useCreateChatSession(repo.id);
-  const reindex = useStartIndexing();
+  const sessionsQuery =
+    useChatSessions(
+      repo.id,
+      ready
+    );
+
+  const createSession =
+    useCreateChatSession(repo.id);
+
+  const reindex =
+    useStartIndexing();
 
   return (
-    <aside className="flex w-full flex-col border-b md:w-72 md:border-r md:border-b-0">
-      
-      {/* Repository information */}
-      <div className="space-y-3 p-4">
+    <aside
+      className="
+        flex
+        min-h-0
+        w-full
+        shrink-0
+        flex-col
+        overflow-hidden
+        border-b
+        md:h-full
+        md:w-72
+        md:border-r
+        md:border-b-0
+      "
+    >
+      {/* ================= REPOSITORY INFO ================= */}
+
+      <div className="shrink-0 space-y-3 p-4">
         <div className="space-y-1">
           <p className="truncate text-sm font-medium">
             {repo.fullName}
           </p>
 
           <div className="flex flex-wrap items-center gap-2">
-            <IndexStatusBadge status={repo.indexStatus} />
+            <IndexStatusBadge
+              status={repo.indexStatus}
+            />
 
             {repo.isPrivate && (
               <span className="text-xs text-muted-foreground">
@@ -45,17 +78,28 @@ export function ChatSidebar({
           </div>
         </div>
 
-        {/* Buttons */}
+        {/* ================= BUTTONS ================= */}
+
         <div className="flex gap-2">
           <Button
             size="sm"
             className="flex-1"
-            disabled={!ready || createSession.isPending}
+            disabled={
+              !ready ||
+              createSession.isPending
+            }
             onClick={() =>
-              createSession.mutate("New chat", {
-                onSuccess: (session) =>
-                  onSelectSession(session.id),
-              })
+              createSession.mutate(
+                "New chat",
+                {
+                  onSuccess: (
+                    session
+                  ) =>
+                    onSelectSession(
+                      session.id
+                    ),
+                }
+              )
             }
           >
             <Plus data-icon="inline-start" />
@@ -67,9 +111,12 @@ export function ChatSidebar({
             variant="outline"
             disabled={
               reindex.isPending ||
-              repo.indexStatus === "INDEXING"
+              repo.indexStatus ===
+                "INDEXING"
             }
-            onClick={() => reindex.mutate(repo.id)}
+            onClick={() =>
+              reindex.mutate(repo.id)
+            }
             aria-label="Re-index repository"
           >
             <RotateCcw />
@@ -79,25 +126,32 @@ export function ChatSidebar({
 
       <Separator />
 
-      {/* Sessions heading */}
-      <div className="px-4 py-2 text-xs font-medium text-muted-foreground">
+      {/* ================= SESSIONS HEADER ================= */}
+
+      <div className="shrink-0 px-4 py-2 text-xs font-medium text-muted-foreground">
         Sessions
       </div>
 
-      {/* Sessions list */}
-      <ScrollArea className="flex-1">
+      {/* ================= SESSIONS ================= */}
+
+      <ScrollArea className="min-h-0 flex-1">
         <div className="space-y-1 px-2 pb-4">
 
           {/* Repository not ready */}
+
           {!ready && (
             <p className="px-2 text-xs text-muted-foreground">
-              Sessions unlock after indexing completes.
+              Sessions unlock after
+              indexing completes.
             </p>
           )}
 
-          {/* Loading skeletons */}
+          {/* Loading */}
+
           {sessionsQuery.isLoading &&
-            Array.from({ length: 3 }).map((_, i) => (
+            Array.from({
+              length: 3,
+            }).map((_, i) => (
               <Skeleton
                 key={i}
                 className="h-12 rounded-xl"
@@ -105,37 +159,51 @@ export function ChatSidebar({
             ))}
 
           {/* Sessions */}
-          {sessionsQuery.data?.map((session) => (
-            <button
-              key={session.id}
-              type="button"
-              onClick={() => onSelectSession(session.id)}
-              className={cn(
-                "w-full rounded-xl px-3 py-2.5 text-left transition-colors hover:bg-muted",
-                sessionId === session.id && "bg-muted"
-              )}
-            >
-              <p className="truncate text-sm font-medium">
-                {session.title}
-              </p>
 
-              <p className="text-xs text-muted-foreground">
-                {formatDistanceToNow(
-                  new Date(session.createdAt),
-                  {
-                    addSuffix: true,
-                  }
+          {sessionsQuery.data?.map(
+            (session) => (
+              <button
+                key={session.id}
+                type="button"
+                onClick={() =>
+                  onSelectSession(
+                    session.id
+                  )
+                }
+                className={cn(
+                  "w-full rounded-xl px-3 py-2.5 text-left transition-colors hover:bg-muted",
+                  sessionId ===
+                    session.id &&
+                    "bg-muted"
                 )}
-              </p>
-            </button>
-          ))}
+              >
+                <p className="truncate text-sm font-medium">
+                  {session.title}
+                </p>
+
+                <p className="text-xs text-muted-foreground">
+                  {formatDistanceToNow(
+                    new Date(
+                      session.createdAt
+                    ),
+                    {
+                      addSuffix: true,
+                    }
+                  )}
+                </p>
+              </button>
+            )
+          )}
 
           {/* No sessions */}
+
           {ready &&
             sessionsQuery.isSuccess &&
-            sessionsQuery.data.length === 0 && (
+            sessionsQuery.data
+              .length === 0 && (
               <p className="px-2 text-xs text-muted-foreground">
-                No chats yet. Start one to begin.
+                No chats yet. Start one
+                to begin.
               </p>
             )}
         </div>

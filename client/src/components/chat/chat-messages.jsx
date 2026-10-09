@@ -3,8 +3,10 @@ import { useEffect, useRef } from "react";
 
 import { ChatMarkdown } from "@/components/chat/chat-markdown";
 import { CitationChips } from "@/components/chat/citation-chips";
+
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Bubble, BubbleContent } from "@/components/ui/bubble";
+
 import {
   Message,
   MessageAvatar,
@@ -12,8 +14,10 @@ import {
   MessageFooter,
   MessageGroup,
 } from "@/components/ui/message";
+
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
+
 import { cn } from "@/lib/utils";
 
 export function ChatMessages({
@@ -24,27 +28,48 @@ export function ChatMessages({
 }) {
   const bottomRef = useRef(null);
 
+  /*
+   * Automatically scroll to the latest message
+   * whenever messages or streaming text changes.
+   */
   useEffect(() => {
     bottomRef.current?.scrollIntoView({
       behavior: "smooth",
     });
   }, [messages, streamText]);
 
+  /*
+   * Loading state
+   */
   if (isLoading) {
     return (
-      <div className="flex flex-1 flex-col gap-4 p-6">
-        <Skeleton className="h-16 w-2/3 rounded-3xl" />
-        <Skeleton className="ml-auto h-12 w-1/2 rounded-3xl" />
-        <Skeleton className="h-24 w-3/4 rounded-3xl" />
+      <div className="min-h-0 flex-1 overflow-hidden">
+        <div className="flex h-full flex-col gap-4 overflow-y-auto p-6">
+          <Skeleton className="h-16 w-2/3 rounded-3xl" />
+
+          <Skeleton className="ml-auto h-12 w-1/2 rounded-3xl" />
+
+          <Skeleton className="h-24 w-3/4 rounded-3xl" />
+        </div>
       </div>
     );
   }
 
   return (
-    <ScrollArea className="flex-1">
+    /*
+     * IMPORTANT:
+     *
+     * min-h-0 allows this flex child to shrink.
+     * flex-1 makes it take all available chat height.
+     *
+     * ScrollArea handles ONLY the messages scrolling.
+     */
+    <ScrollArea className="min-h-0 flex-1">
       <div className="mx-auto flex w-full max-w-3xl flex-col gap-5 px-4 py-6">
 
-        {/* Empty state */}
+        {/*
+         * Empty state
+         */}
         {messages.length === 0 && !streamText && (
           <div className="rounded-2xl border border-dashed bg-muted/30 px-6 py-10 text-center">
             <p className="font-medium">
@@ -52,23 +77,29 @@ export function ChatMessages({
             </p>
 
             <p className="mt-1 text-sm text-muted-foreground">
-              Try “Where is authentication handled?” or “Explain the
-              repository indexing flow.”
+              Try “Where is authentication handled?” or
+              “Explain the repository indexing flow.”
             </p>
           </div>
         )}
 
         <MessageGroup>
-          {/* Existing messages */}
+
+          {/*
+           * Existing messages
+           */}
           {messages.map((message) => {
-            const isUser = message.role === "USER";
+            const isUser =
+              message.role === "USER";
 
             return (
               <Message
                 key={message.id}
                 align={isUser ? "end" : "start"}
               >
-                {/* Avatar */}
+                {/*
+                 * Avatar
+                 */}
                 <MessageAvatar>
                   <Avatar className="size-8">
                     <AvatarFallback
@@ -87,12 +118,24 @@ export function ChatMessages({
                   </Avatar>
                 </MessageAvatar>
 
-                {/* Message content */}
+                {/*
+                 * Message content
+                 */}
                 <MessageContent>
                   <Bubble
-                    variant={isUser ? "default" : "muted"}
-                    align={isUser ? "end" : "start"}
-                    className={cn(!isUser && "max-w-full")}
+                    variant={
+                      isUser
+                        ? "default"
+                        : "muted"
+                    }
+                    align={
+                      isUser
+                        ? "end"
+                        : "start"
+                    }
+                    className={cn(
+                      !isUser && "max-w-full"
+                    )}
                   >
                     <BubbleContent
                       className={cn(
@@ -105,26 +148,36 @@ export function ChatMessages({
                           {message.content}
                         </span>
                       ) : (
-                        <ChatMarkdown content={message.content} />
+                        <ChatMarkdown
+                          content={message.content}
+                        />
                       )}
                     </BubbleContent>
                   </Bubble>
 
-                  {/* Citations */}
-                  {!isUser && message.citations?.length > 0 && (
-                    <MessageFooter>
-                      <CitationChips
-                        repo={repo}
-                        citations={message.citations}
-                      />
-                    </MessageFooter>
-                  )}
+                  {/*
+                   * Citations
+                   */}
+                  {!isUser &&
+                    message.citations?.length >
+                      0 && (
+                      <MessageFooter>
+                        <CitationChips
+                          repo={repo}
+                          citations={
+                            message.citations
+                          }
+                        />
+                      </MessageFooter>
+                    )}
                 </MessageContent>
               </Message>
             );
           })}
 
-          {/* Streaming AI response */}
+          {/*
+           * Streaming AI response
+           */}
           {streamText && (
             <Message align="start">
               <MessageAvatar>
@@ -155,7 +208,12 @@ export function ChatMessages({
           )}
         </MessageGroup>
 
-        {/* Scroll target */}
+        {/*
+         * Invisible element at the bottom.
+         *
+         * scrollIntoView() moves the chat to this element
+         * whenever a new message / streaming chunk arrives.
+         */}
         <div ref={bottomRef} />
       </div>
     </ScrollArea>

@@ -1,13 +1,16 @@
-
 import { useEffect, useRef, useState } from "react";
+
 import { ArrowLeft } from "lucide-react";
+
 import { Link } from "react-router-dom";
 
 import { ChatComposer } from "@/components/chat/chat-composer";
 import { ChatMessages } from "@/components/chat/chat-messages";
 import { ChatSidebar } from "@/components/chat/chat-sidebar";
 import { IndexingState } from "@/components/chat/indexing-state";
-import  AppShell  from "@/components/layout/app-shell";
+
+import AppShell from "@/components/layout/app-shell";
+
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -27,32 +30,36 @@ export function ChatView({ repoId }) {
   const repoQuery = useRepository(repoId);
 
   const isIndexing =
-    repoQuery.data?.indexStatus === "INDEXING";
+    repoQuery.data?.indexStatus ===
+    "INDEXING";
 
   const statusQuery = useIndexStatus(
     repoId,
     isIndexing ||
-      repoQuery.data?.indexStatus === "PENDING"
+      repoQuery.data?.indexStatus ===
+        "PENDING"
   );
 
   const indexStatus =
     statusQuery.data?.indexStatus ??
     repoQuery.data?.indexStatus;
 
-  const ready = indexStatus === "READY";
+  const ready =
+    indexStatus === "READY";
 
-  const sessionsQuery = useChatSessions(
-    repoId,
-    ready
-  );
+  const sessionsQuery =
+    useChatSessions(repoId, ready);
 
   const createSession =
     useCreateChatSession(repoId);
 
-  const [selectedSessionId, setSelectedSessionId] =
-    useState(null);
+  const [
+    selectedSessionId,
+    setSelectedSessionId,
+  ] = useState(null);
 
-  const autoCreateRef = useRef(false);
+  const autoCreateRef =
+    useRef(false);
 
   /*
    * If user has selected a session,
@@ -60,7 +67,8 @@ export function ChatView({ repoId }) {
    *
    * Otherwise use the first session.
    *
-   * If there are no sessions, sessionId = null.
+   * If there are no sessions,
+   * sessionId = null.
    */
   const sessionId =
     selectedSessionId ??
@@ -82,7 +90,10 @@ export function ChatView({ repoId }) {
    * when repository becomes ready.
    */
   useEffect(() => {
-    if (!ready || sessionsQuery.isLoading) {
+    if (
+      !ready ||
+      sessionsQuery.isLoading
+    ) {
       return;
     }
 
@@ -95,7 +106,8 @@ export function ChatView({ repoId }) {
 
     if (
       !sessionsQuery.isSuccess ||
-      (sessionsQuery.data?.length ?? 0) > 0 ||
+      (sessionsQuery.data?.length ?? 0) >
+        0 ||
       autoCreateRef.current
     ) {
       return;
@@ -105,7 +117,9 @@ export function ChatView({ repoId }) {
 
     createSession.mutate(undefined, {
       onSuccess: (session) => {
-        setSelectedSessionId(session.id);
+        setSelectedSessionId(
+          session.id
+        );
       },
 
       onError: () => {
@@ -126,8 +140,9 @@ export function ChatView({ repoId }) {
   if (repoQuery.isLoading) {
     return (
       <AppShell title="Loading chat…">
-        <div className="grid flex-1 gap-4 p-4 md:grid-cols-[18rem_1fr]">
+        <div className="grid min-h-0 flex-1 gap-4 overflow-hidden p-4 md:grid-cols-[18rem_1fr]">
           <Skeleton className="min-h-80 rounded-2xl" />
+
           <Skeleton className="min-h-80 rounded-2xl" />
         </div>
       </AppShell>
@@ -143,14 +158,16 @@ export function ChatView({ repoId }) {
   ) {
     return (
       <AppShell title="Repository unavailable">
-        <div className="flex flex-1 flex-col items-center justify-center gap-3 p-8">
+        <div className="flex min-h-0 flex-1 flex-col items-center justify-center gap-3 overflow-hidden p-8">
           <p className="text-sm text-muted-foreground">
             {repoQuery.error?.message ??
               "Repository not found"}
           </p>
 
           <Button
-            render={<Link to="/dashboard" />}
+            render={
+              <Link to="/dashboard" />
+            }
           >
             Back to dashboard
           </Button>
@@ -171,49 +188,67 @@ export function ChatView({ repoId }) {
       }
       actions={
         <Button
-        className="mr-5"
+          className="mr-5"
           variant="outline"
           size="sm"
-          render={<Link to="/dashboard" />}
+          render={
+            <Link to="/dashboard" />
+          }
         >
           <ArrowLeft data-icon="inline-start" />
           Repos
         </Button>
       }
     >
-      <div className="flex min-h-0 flex-1 flex-col md:flex-row">
+      {/*
+       * Main chat layout.
+       *
+       * This container fills the remaining
+       * viewport height.
+       */}
+      <div className="flex min-h-0 flex-1 flex-col overflow-hidden md:flex-row">
 
-        {/* Chat Sidebar */}
+        {/*
+         * CHAT SIDEBAR
+         */}
         <ChatSidebar
           repo={{
             ...repo,
 
             indexStatus:
-              indexStatus ?? repo.indexStatus,
+              indexStatus ??
+              repo.indexStatus,
 
             filesProcessed:
-              statusQuery.data?.filesProcessed ??
+              statusQuery.data
+                ?.filesProcessed ??
               repo.filesProcessed,
 
             filesTotal:
-              statusQuery.data?.filesTotal ??
+              statusQuery.data
+                ?.filesTotal ??
               repo.filesTotal,
 
             chunkCount:
-              statusQuery.data?.chunkCount ??
+              statusQuery.data
+                ?.chunkCount ??
               repo.chunkCount,
 
             errorMessage:
-              statusQuery.data?.errorMessage ??
+              statusQuery.data
+                ?.errorMessage ??
               repo.errorMessage,
           }}
           sessionId={sessionId}
-          onSelectSession={setSelectedSessionId}
+          onSelectSession={
+            setSelectedSessionId
+          }
         />
 
-        {/* Main Chat Area */}
-        <section className="flex min-h-[70vh] min-w-0 flex-1 flex-col">
-
+        {/*
+         * MAIN CHAT AREA
+         */}
+        <section className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
           {!ready ? (
             <IndexingState
               repo={repo}
@@ -221,22 +256,34 @@ export function ChatView({ repoId }) {
             />
           ) : (
             <>
+              {/*
+               * Messages occupy all remaining
+               * available height and scroll.
+               */}
               <ChatMessages
                 repo={repo}
-                messages={messagesQuery.data ?? []}
+                messages={
+                  messagesQuery.data ?? []
+                }
                 streamText={streamText}
-                isLoading={messagesQuery.isLoading}
+                isLoading={
+                  messagesQuery.isLoading
+                }
               />
 
-              <ChatComposer
-                disabled={!sessionId}
-                streaming={streaming}
-                onSend={send}
-                onStop={stop}
-              />
+              {/*
+               * Composer stays at bottom.
+               */}
+              <div className="shrink-0">
+                <ChatComposer
+                  disabled={!sessionId}
+                  streaming={streaming}
+                  onSend={send}
+                  onStop={stop}
+                />
+              </div>
             </>
           )}
-
         </section>
       </div>
     </AppShell>

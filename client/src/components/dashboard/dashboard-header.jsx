@@ -97,8 +97,6 @@ export function DashboardHeader({
 
           <div className="flex min-w-0 items-start gap-3">
 
-            <SidebarTrigger className="-ml-1 mt-0.5" />
-
             <div className="min-w-0">
 
               <h1 className="font-heading text-xl font-semibold tracking-tight">

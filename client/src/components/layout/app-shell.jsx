@@ -1,30 +1,17 @@
 import React from "react";
 
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, NavLink, useLocation } from "react-router-dom";
 
-import { LogOut, Settings } from "lucide-react";
+import {
+  LayoutDashboard,
+  FolderGit2,
+  Settings,
+  MessageSquareCode,
+  ChevronRight,
+} from "lucide-react";
 
 import { CodeOrbitIcon } from "@/components/icons/codeorbit-icon";
 import { ModeToggle } from "@/components/ui/mode-toggle";
-import { useCurrentUser, useLogout } from "@/hooks/use-auth";
-
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "@/components/ui/avatar";
-
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-
-import { Separator } from "@/components/ui/separator";
 
 import {
   Sidebar,
@@ -40,293 +27,224 @@ import {
   SidebarMenuItem,
   SidebarProvider,
   SidebarTrigger,
+  useSidebar,
 } from "@/components/ui/sidebar";
 
-import {
-  dashboardNavGroups,
-  isDashboardNavActive,
-} from "@/lib/dashboard-nav";
+// Sidebar navigation items
+const navigationItems = [
+  {
+    title: "Overview",
+    url: "/dashboard/overview",
+    icon: LayoutDashboard,
+  },
+  {
+    title: "Repositories",
+    url: "/dashboard",
+    icon: FolderGit2,
+  },
+  {
+    title: "Settings",
+    url: "/dashboard/settings",
+    icon: Settings,
+  },
+];
 
-import { cn } from "@/lib/utils";
-
-export default function AppShell({
-  children,
-  title,
-  description,
-  actions,
-  hideHeader = false,
-}) {
-  const location = useLocation();
-  const navigate = useNavigate();
-
-  const pathname = location.pathname;
-
-  const { data: user } = useCurrentUser();
-  const logout = useLogout();
-
+/**
+ * BrandMark
+ *
+ * Reusable CodeOrbit brand component.
+ * Used by the login page.
+ */
+export function BrandMark() {
   return (
-    <SidebarProvider>
-      {/* ================= SIDEBAR ================= */}
+    <div className="flex items-center gap-2">
+      <CodeOrbitIcon className="size-9 shrink-0" />
 
-      <Sidebar
-        variant="inset"
-        collapsible="icon"
-      >
-        {/* ================= SIDEBAR HEADER ================= */}
+      <div className="flex flex-col">
+        <span className="text-sm font-semibold leading-tight">
+          CodeOrbit
+        </span>
 
-        <SidebarHeader className="px-3 py-3">
-          <SidebarMenu>
-            <SidebarMenuItem>
-              <SidebarMenuButton
-                size="lg"
-                tooltip="CodeOrbit"
-                render={<Link to="/dashboard" />}
-                className="h-12"
-              >
-                <CodeOrbitIcon className="size-8 rounded-[10px]" />
-
-                <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-semibold">
-                    CodeOrbit
-                  </span>
-
-                  <span className="truncate text-xs text-muted-foreground">
-                    Chat with your code
-                  </span>
-                </div>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          </SidebarMenu>
-        </SidebarHeader>
-
-        {/* ================= SIDEBAR CONTENT ================= */}
-
-        <SidebarContent>
-          {dashboardNavGroups.map((group) => (
-            <SidebarGroup key={group.label}>
-              <SidebarGroupLabel>
-                {group.label}
-              </SidebarGroupLabel>
-
-              <SidebarGroupContent>
-                <SidebarMenu>
-                  {group.items.map((item) => {
-                    const Icon = item.icon;
-
-                    return (
-                      <SidebarMenuItem key={item.href}>
-                        <SidebarMenuButton
-                          isActive={isDashboardNavActive(
-                            pathname,
-                            item.href,
-                            item.exact
-                          )}
-                          tooltip={item.title}
-                          render={<Link to={item.href} />}
-                          className="h-9"
-                        >
-                          <Icon />
-                          <span>
-                            {item.title}
-                          </span>
-                        </SidebarMenuButton>
-                      </SidebarMenuItem>
-                    );
-                  })}
-                </SidebarMenu>
-              </SidebarGroupContent>
-            </SidebarGroup>
-          ))}
-        </SidebarContent>
-
-        {/* ================= SIDEBAR FOOTER ================= */}
-
-        <SidebarFooter className="p-2">
-          <SidebarMenu>
-            <SidebarMenuItem>
-
-              <DropdownMenu>
-                <DropdownMenuTrigger
-                  render={
-                    <SidebarMenuButton
-                      size="lg"
-                      className="data-[popup-open]:bg-sidebar-accent"
-                    />
-                  }
-                >
-                  <Avatar className="size-8 rounded-lg">
-                    <AvatarImage
-                      src={user?.avatarUrl ?? undefined}
-                      alt={user?.displayName ?? "User"}
-                    />
-
-                    <AvatarFallback className="rounded-lg">
-                      {(user?.displayName ?? "DP")
-                        .slice(0, 2)
-                        .toUpperCase()}
-                    </AvatarFallback>
-                  </Avatar>
-
-                  <div className="grid flex-1 text-left text-sm leading-tight">
-                    <span className="truncate font-medium">
-                      {user?.displayName ?? "User"}
-                    </span>
-
-                    <span className="truncate text-xs text-muted-foreground">
-                      @{user?.githubUsername ?? "github"}
-                    </span>
-                  </div>
-                </DropdownMenuTrigger>
-
-                {/* ================= DROPDOWN ================= */}
-
-                <DropdownMenuContent
-                  className="min-w-56 rounded-lg"
-                  side="top"
-                  align="start"
-                  sideOffset={8}
-                >
-                  <DropdownMenuGroup>
-                    <DropdownMenuLabel className="font-normal">
-                      <div className="flex flex-col gap-1">
-                        <span className="text-sm font-medium">
-                          {user?.displayName ?? "User"}
-                        </span>
-
-                        <span className="text-xs text-muted-foreground">
-                          Connected via GitHub
-                        </span>
-                      </div>
-                    </DropdownMenuLabel>
-                  </DropdownMenuGroup>
-
-                  <DropdownMenuSeparator />
-
-                  <DropdownMenuItem
-                    onClick={() =>
-                      navigate("/dashboard/settings")
-                    }
-                  >
-                    <Settings />
-                    Settings
-                  </DropdownMenuItem>
-
-                  <DropdownMenuSeparator />
-
-                  <DropdownMenuItem
-                    onClick={() => logout.mutate()}
-                    disabled={logout.isPending}
-                  >
-                    <LogOut />
-
-                    {logout.isPending
-                      ? "Logging out..."
-                      : "Log out"}
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-
-            </SidebarMenuItem>
-          </SidebarMenu>
-        </SidebarFooter>
-      </Sidebar>
-
-      {/* ================= MAIN CONTENT ================= */}
-
-      <SidebarInset>
-        {!hideHeader && (
-          <header
-            className="
-              sticky top-0 z-20
-              flex h-14 shrink-0
-              items-center gap-2
-              border-b
-              bg-background/80
-              px-4
-              backdrop-blur
-            "
-          >
-            <SidebarTrigger className="-ml-1" />
-
-            <Separator
-              orientation="vertical"
-              className="mr-2 h-4"
-            />
-
-            <div className="flex min-w-0 flex-1 items-center justify-between gap-3">
-
-              <div className="min-w-0">
-                {title && (
-                  <h1 className="truncate font-heading text-sm font-medium">
-                    {title}
-                  </h1>
-                )}
-
-                {description && (
-                  <p className="truncate text-xs text-muted-foreground">
-                    {description}
-                  </p>
-                )}
-              </div>
-
-              <div className="flex items-center gap-2">
-                {actions}
-
-                <ModeToggle />
-              </div>
-
-            </div>
-          </header>
-        )}
-
-        <div className="flex flex-1 flex-col">
-          {children}
-        </div>
-      </SidebarInset>
-    </SidebarProvider>
-  );
-}
-
-/* =========================================================
-   BRAND MARK
-========================================================= */
-
-export function BrandMark({ className }) {
-  return (
-    <div
-      className={cn(
-        "flex items-center gap-2.5 font-semibold tracking-tight",
-        className
-      )}
-    >
-      <CodeOrbitIcon className="size-8 rounded-[10px]" />
-
-      <span className="font-heading text-[1.05rem] leading-none">
-        CodeOrbit
-      </span>
+        <span className="text-xs text-muted-foreground">
+          Chat with your code
+        </span>
+      </div>
     </div>
   );
 }
 
-/* =========================================================
-   GHOST BUTTON LINK
-========================================================= */
+/**
+ * Sidebar brand
+ *
+ * Expanded:
+ * Logo + CodeOrbit + Chat with your code
+ *
+ * Collapsed:
+ * Logo only
+ */
+function SidebarBrand() {
+  const { state } = useSidebar();
 
-export function GhostButtonLink({
-  href,
-  children,
-  className,
-}) {
+  const isCollapsed = state === "collapsed";
+
   return (
-    <Link
-      to={href}
-      className={cn(
-        "inline-flex items-center justify-center rounded-md px-3 py-2 text-sm font-medium",
-        "hover:bg-accent hover:text-accent-foreground",
-        className
-      )}
-    >
-      {children}
-    </Link>
+    <SidebarHeader className="p-3">
+      <SidebarMenu>
+        <SidebarMenuItem>
+          <SidebarMenuButton
+            render={<Link to="/dashboard" />}
+            size="lg"
+            tooltip="CodeOrbit"
+            className="h-12 gap-3"
+          >
+            {/* Logo remains visible in both states */}
+            <div className="flex size-9 shrink-0 items-center justify-center">
+              <CodeOrbitIcon className="size-8 rounded-[10px]" />
+            </div>
+
+            {/* Hide brand text when collapsed */}
+            {!isCollapsed && (
+              <div className="grid min-w-0 flex-1 text-left leading-tight">
+                <span className="truncate text-sm font-semibold tracking-tight">
+                  CodeOrbit
+                </span>
+
+                <span className="truncate text-xs text-muted-foreground">
+                  Chat with your code
+                </span>
+              </div>
+            )}
+          </SidebarMenuButton>
+        </SidebarMenuItem>
+      </SidebarMenu>
+    </SidebarHeader>
+  );
+}
+
+/**
+ * Sidebar navigation
+ */
+function SidebarNavigation() {
+  const location = useLocation();
+
+  return (
+    <SidebarContent>
+      <SidebarGroup>
+        <SidebarGroupLabel>Workspace</SidebarGroupLabel>
+
+        <SidebarGroupContent>
+          <SidebarMenu>
+            {navigationItems.map((item) => {
+              const Icon = item.icon;
+
+              const isActive =
+                item.url === "/dashboard"
+                  ? location.pathname === "/dashboard"
+                  : location.pathname === item.url ||
+                    location.pathname.startsWith(`${item.url}/`);
+
+              return (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton
+                    render={<NavLink to={item.url} />}
+                    isActive={isActive}
+                    tooltip={item.title}
+                  >
+                    <Icon />
+
+                    <span>{item.title}</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              );
+            })}
+          </SidebarMenu>
+        </SidebarGroupContent>
+      </SidebarGroup>
+    </SidebarContent>
+  );
+}
+
+/**
+ * Sidebar footer
+ *
+ * Ask anything + appearance settings
+ */
+function SidebarBottom() {
+  const { state } = useSidebar();
+
+  const isCollapsed = state === "collapsed";
+
+  return (
+    <SidebarFooter className="p-3">
+      <SidebarMenu>
+        <SidebarMenuItem>
+          <SidebarMenuButton
+            render={<Link to="/ask-anything" />}
+            tooltip="Ask anything"
+          >
+            <MessageSquareCode />
+
+            <span>Ask anything</span>
+          </SidebarMenuButton>
+        </SidebarMenuItem>
+      </SidebarMenu>
+
+      <div className="border-t border-sidebar-border pt-3">
+        <div
+          className={`flex items-center ${
+            isCollapsed ? "justify-center" : "justify-between"
+          } gap-2`}
+        >
+          {!isCollapsed && (
+            <span className="text-xs text-muted-foreground">
+              Appearance
+            </span>
+          )}
+
+          <ModeToggle />
+        </div>
+      </div>
+    </SidebarFooter>
+  );
+}
+
+/**
+ * Main application shell
+ */
+export default function AppShell({ children }) {
+  return (
+    <SidebarProvider>
+      <Sidebar variant="inset" collapsible="icon">
+        <SidebarBrand />
+
+        <SidebarNavigation />
+
+        <SidebarBottom />
+      </Sidebar>
+
+      <SidebarInset className="min-w-0">
+        {/* Application header */}
+        <header className="sticky top-0 z-20 flex h-14 items-center gap-3 border-b bg-background/85 px-4 backdrop-blur-xl">
+          <SidebarTrigger className="-ml-1" />
+
+          <div className="h-5 w-px bg-border" />
+
+          <div className="flex min-w-0 flex-1 items-center gap-2">
+            <span className="truncate text-sm font-medium">
+              CodeOrbit
+            </span>
+
+            <ChevronRight className="size-4 shrink-0 text-muted-foreground" />
+
+            <span className="truncate text-sm text-muted-foreground">
+              Workspace
+            </span>
+          </div>
+        </header>
+
+        {/* Page content */}
+        <main className="min-w-0 flex-1">{children}</main>
+      </SidebarInset>
+    </SidebarProvider>
   );
 }

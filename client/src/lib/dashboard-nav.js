@@ -2,6 +2,7 @@ import {
   FolderGit2,
   LayoutGrid,
   Settings,
+  House
 } from "lucide-react";
 
 export const dashboardNavGroups = [
@@ -9,6 +10,11 @@ export const dashboardNavGroups = [
     label: "Workspace",
 
     items: [
+      {
+        title: "Home",
+        href: "/",
+        icon: House,
+      },
       {
         title: "Overview",
         href: "/dashboard/overview",
@@ -19,7 +25,7 @@ export const dashboardNavGroups = [
         href: "/dashboard",
         icon: FolderGit2,
         exact: true,
-      },
+      }
     ],
   },
 
