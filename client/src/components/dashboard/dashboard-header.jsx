@@ -1,12 +1,12 @@
 import { RefreshCw, Search } from "lucide-react";
 
-import { ModeToggle } from "@/components/ui/mode-toggle";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
-import { SidebarTrigger } from "@/components/ui/sidebar";
-import { cn } from "@/lib/utils";
 
+import { SidebarTriggerButton } from "@/components/layout/app-shell";
+
+import { cn } from "@/lib/utils";
 
 const visibilityFilters = [
   {
@@ -22,7 +22,6 @@ const visibilityFilters = [
     label: "Private",
   },
 ];
-
 
 const statusFilters = [
   {
@@ -47,7 +46,6 @@ const statusFilters = [
   },
 ];
 
-
 function FilterPill({
   active,
   onClick,
@@ -57,6 +55,7 @@ function FilterPill({
     <button
       type="button"
       onClick={onClick}
+      aria-pressed={active}
       className={cn(
         "rounded-full border px-3 py-1 text-xs font-medium transition-colors",
         active
@@ -68,7 +67,6 @@ function FilterPill({
     </button>
   );
 }
-
 
 export function DashboardHeader({
   search,
@@ -84,21 +82,19 @@ export function DashboardHeader({
 }) {
   return (
     <div className="sticky top-0 z-20 border-b bg-background/85 backdrop-blur-xl">
-
       <div className="flex flex-col gap-4 px-4 py-4 md:px-6">
 
-        {/* =========================
-            HEADER TOP
-        ========================== */}
-
+        {/* Header Top */}
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
 
-          {/* Title */}
+          {/* Title + Sidebar Trigger + Repository Count */}
+          <div className="flex min-w-0 items-center gap-3">
 
-          <div className="flex min-w-0 items-start gap-3">
+          <SidebarTriggerButton
+  className="h-10 w-10 shrink-0"
+/>
 
             <div className="min-w-0">
-
               <h1 className="font-heading text-xl font-semibold tracking-tight">
                 Repositories
               </h1>
@@ -108,20 +104,15 @@ export function DashboardHeader({
                   ? `${totalCount} connected · ${readyCount ?? 0} ready`
                   : "Sync and index a repo to start chatting"}
               </p>
-
             </div>
 
           </div>
 
-
           {/* Search + Actions */}
-
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
 
             {/* Search */}
-
             <div className="relative min-w-[220px] flex-1 sm:min-w-[280px]">
-
               <Search
                 className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground"
               />
@@ -134,21 +125,16 @@ export function DashboardHeader({
                 placeholder="Search repositories…"
                 className="border-dashed bg-background pl-9 shadow-sm"
               />
-
             </div>
 
-
-            {/* Buttons */}
-
-            <div className="flex items-center gap-6">
-
+            {/* Sync Button */}
+            <div className="flex items-center gap-2">
               <Button
                 variant="outline"
                 className="border-dashed shadow-sm"
                 onClick={onSync}
                 disabled={isSyncing}
               >
-
                 <RefreshCw
                   data-icon="inline-start"
                   className={
@@ -158,34 +144,21 @@ export function DashboardHeader({
                   }
                 />
 
-                Sync
-
+                {isSyncing ? "Syncing..." : "Sync"}
               </Button>
-
-              <ModeToggle />
-
             </div>
 
           </div>
-
         </div>
 
-
         {/* Separator */}
-
         <Separator className="opacity-60" />
 
-
-        {/* =========================
-            FILTERS
-        ========================== */}
-
+        {/* Filters */}
         <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
 
-          {/* Visibility */}
-
+          {/* Visibility Filters */}
           <div className="flex flex-wrap items-center gap-2">
-
             <span className="mr-1 text-xs font-medium text-muted-foreground">
               Visibility
             </span>
@@ -201,14 +174,10 @@ export function DashboardHeader({
                 {filter.label}
               </FilterPill>
             ))}
-
           </div>
 
-
-          {/* Status */}
-
+          {/* Status Filters */}
           <div className="flex flex-wrap items-center gap-2">
-
             <span className="mr-1 text-xs font-medium text-muted-foreground">
               Status
             </span>
@@ -224,13 +193,10 @@ export function DashboardHeader({
                 {filter.label}
               </FilterPill>
             ))}
-
           </div>
 
         </div>
-
       </div>
-
     </div>
   );
 }

@@ -294,9 +294,7 @@ export default function HomePage() {
         >
           <BrandMark />
 
-          <span className="text-sm font-semibold tracking-tight">
-            CodeOrbit
-          </span>
+        
         </Link>
 
         {/* Header right */}
@@ -511,7 +509,7 @@ export default function HomePage() {
 
                 <button
                   onClick={handleNext}
-                  className="group mt-7 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-500 px-5 py-3 text-sm font-semibold text-black transition hover:bg-emerald-400"
+                  className="group mt-7 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-amber-600 px-5 py-3 text-sm font-semibold text-black transition hover:bg-amber-600"
                 >
                   Let&apos;s explore
 
@@ -622,7 +620,7 @@ export default function HomePage() {
                   ) : (
                     <button
                       onClick={handleFinish}
-                      className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-emerald-500 px-4 py-2.5 text-sm font-semibold text-black transition hover:bg-emerald-400"
+                      className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-amber-600 px-4 py-2.5 text-sm font-semibold text-black transition hover:bg-amber-400"
                     >
                       Get started
 

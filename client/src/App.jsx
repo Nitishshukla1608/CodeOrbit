@@ -101,13 +101,9 @@ function App() {
 
           {/* Dashboard Overview */}
           <Route
-            path="/dashboard/overview"
-            element={
-              <SidebarProvider>
-                <Dashboar_Overview />
-              </SidebarProvider>
-            }
-          />
+  path="/overview"
+  element={<Dashboar_Overview />}
+/>
 
           {/* Repository Chat */}
           <Route
